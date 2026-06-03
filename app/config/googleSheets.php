@@ -10,6 +10,8 @@ return [
         'alumnos' => 'Alumnos',
         'becas' => 'Becas',
         'imss' => 'IMSS',
+        'fichas' => 'Fichas',
+        'inscripciones' => 'Inscripciones',
         'auth' => 'Auth',
     ],
 ];

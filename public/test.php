@@ -4,7 +4,7 @@ $url = "https://script.google.com/macros/s/AKfycbwN9kBAK6aSRTU7v3XnSwmizmzHg2t1i
 
 $data = [
     "nombre" => "JVLEX",
-    "mensaje" => "Prueba desde Render"
+    "mensaje" => "  Hola!!"
 ];
 
 $ch = curl_init($url);
