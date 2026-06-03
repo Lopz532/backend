@@ -14,8 +14,8 @@ class FichaController
 
     public function registrar(array $request = []): void
     {
-        ResponseService::error('PRUEBA123',400);
         error_log('REQUEST:' .json_encode($request,JSON_UNESCAPED_UNICODE));
+        ResponseService::error('PRUEBA123',400);
         $errors = FichaValidator::validate($request);
 
         if (!empty($errors)) {
