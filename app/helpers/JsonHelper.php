@@ -52,7 +52,7 @@ class JsonHelper
             }
 
             if (is_string($value)) {
-                $clean[$safeKey] = self::sanitizeString($value);
+                $clean[$safeKey] = self::normalizeFieldByKey($safeKey, $value);
                 continue;
             }
 
@@ -69,5 +69,24 @@ class JsonHelper
         $value = preg_replace('/[\x00-\x1F\x7F]/u', '', $value) ?? $value;
 
         return $value;
+    }
+
+    private static function normalizeFieldByKey(string $key, string $value): string
+    {
+        $normalizedKey = strtolower($key);
+
+        if (in_array($normalizedKey, ['fecha_nacimiento', 'fechanacimiento', 'fechaNacimiento'], true)) {
+            return FormHelper::normalizeDate($value);
+        }
+
+        if (in_array($normalizedKey, ['tipo_sangre', 'tiposangre', 'tipoSangre'], true)) {
+            return FormHelper::normalizeBloodType($value);
+        }
+
+        if ($normalizedKey === 'semestre') {
+            return FormHelper::normalizeSemester($value);
+        }
+
+        return self::sanitizeString($value);
     }
 }

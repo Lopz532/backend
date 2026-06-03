@@ -42,7 +42,7 @@ class FichaValidator
         self::validateDate($errors, $data, 'fecha_nacimiento');
         self::validateIntegerRange($errors, $data, 'edad', 3, 120);
         self::validateChoice($errors, $data, 'genero', array_keys($dropdowns['genero'] ?? []), 'Genero invalido.');
-        self::validateChoice($errors, $data, 'tipo_sangre', array_keys($dropdowns['tipo_sangre'] ?? []), 'Tipo de sangre invalido.', true);
+        self::validateBloodType($errors, $data, 'tipo_sangre');
         self::validateChoice($errors, $data, 'periodo_escolar', array_keys($dropdowns['periodo_escolar'] ?? []), 'Periodo escolar invalido.');
         self::validateSemester($errors, $data, 'semestre', array_keys($dropdowns['semestre'] ?? []));
         self::validateChoice($errors, $data, 'especialidad', array_keys($dropdowns['especialidad'] ?? []), 'Especialidad invalida.');
@@ -100,17 +100,14 @@ class FichaValidator
             return;
         }
 
-        $date = DateTimeImmutable::createFromFormat('Y-m-d', (string) $data[$field]);
-        $dateErrors = DateTimeImmutable::getLastErrors();
-        $warningCount = is_array($dateErrors) ? (int) ($dateErrors['warning_count'] ?? 0) : 0;
-        $errorCount = is_array($dateErrors) ? (int) ($dateErrors['error_count'] ?? 0) : 0;
-
-        if (!$date || $warningCount > 0 || $errorCount > 0) {
+        if (FormHelper::parseDate($data[$field]) === null) {
             $errors[$field][] = 'La fecha no es valida.';
             return;
         }
 
-        if ($date > new DateTimeImmutable('today')) {
+        $normalized = FormHelper::parseDate($data[$field]);
+
+        if ($normalized !== null && new DateTimeImmutable($normalized) > new DateTimeImmutable('today')) {
             $errors[$field][] = 'La fecha no puede ser futura.';
         }
     }
@@ -149,15 +146,28 @@ class FichaValidator
         }
     }
 
+    private static function validateBloodType(array &$errors, array $data, string $field): void
+    {
+        if (empty($data[$field])) {
+            return;
+        }
+
+        $value = FormHelper::normalizeBloodType($data[$field]);
+
+        if (!in_array($value, FormHelper::validBloodTypes(), true)) {
+            $errors[$field][] = 'Tipo de sangre invalido.';
+        }
+    }
+
     private static function validateSemester(array &$errors, array $data, string $field, array $allowedKeys): void
     {
         if (empty($data[$field])) {
             return;
         }
 
-        $key = FormHelper::semesterKey($data[$field]);
+        $semester = FormHelper::normalizeSemester($data[$field]);
 
-        if (!in_array($key, $allowedKeys, true)) {
+        if (!in_array($semester, FormHelper::validSemesters(), true) || !in_array($semester, $allowedKeys, true)) {
             $errors[$field][] = 'El semestre seleccionado no es valido.';
         }
     }
