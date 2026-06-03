@@ -5,6 +5,7 @@ class FichaValidator
 {
     public static function validate(array $data): array
     {
+        error_log('VALIDATOR:' .json_encode($data,JSON_UNESCAPED_UNICODE));
         $errors = [];
         $formsConfig = require __DIR__ . '/../config/schoolForms.php';
         $dropdowns = $formsConfig['dropdowns'] ?? [];
@@ -47,6 +48,7 @@ class FichaValidator
         self::validateSemester($errors, $data, 'semestre', array_keys($dropdowns['semestre'] ?? []));
         self::validateChoice($errors, $data, 'especialidad', array_keys($dropdowns['especialidad'] ?? []), 'Especialidad invalida.');
 
+        ResponseService::error('LLEGO_AL_VALIDATOR',499);
         return $errors;
     }
 
