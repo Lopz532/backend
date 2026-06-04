@@ -79,6 +79,8 @@ class GoogleSheetsService
                     'Content-Type: application/json; charset=utf-8',
                     'Accept: application/json',
                 ],
+                CURLOPT_FOLLOWLOCATION=>true,
+                CURLOPT_MAXREDIRS=>5,
                 CURLOPT_CONNECTTIMEOUT => $timeout,
                 CURLOPT_TIMEOUT => $timeout,
             ]);
