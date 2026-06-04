@@ -121,6 +121,8 @@ class GoogleSheetsService
 
     private function normalizeResponse(string $body, int $statusCode): array
     {
+        error_log('GS_STATUS='.$statusCode);
+        error_log('GS_BODY='.$body);
         $decoded = json_decode($body, true);
 
         if ($statusCode >= 200 && $statusCode < 300) {
