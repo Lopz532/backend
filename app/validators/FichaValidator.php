@@ -163,6 +163,10 @@ class FichaValidator
 
     private static function validateSemester(array &$errors, array $data, string $field, array $allowedKeys): void
     {
+        $semester = FormHelper::normalizeSemester($data[$field]);
+
+error_log('SEMESTRE_NORMALIZADO=' . $semester);
+error_log('SEMESTRES_VALIDOS=' . json_encode($allowedKeys));
         if (empty($data[$field])) {
             return;
         }
