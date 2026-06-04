@@ -48,7 +48,7 @@ class FichaValidator
         self::validateSemester($errors, $data, 'semestre', array_keys($dropdowns['semestre'] ?? []));
         self::validateChoice($errors, $data, 'especialidad', array_keys($dropdowns['especialidad'] ?? []), 'Especialidad invalida.');
 
-        ResponseService::error('LLEGO_AL_VALIDATOR',499);
+        error_log('ERRORES:'.json_encode($errors,JSON_UNESCAPED_UNICODE));
         return $errors;
     }
 
