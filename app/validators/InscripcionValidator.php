@@ -184,9 +184,10 @@ class InscripcionValidator
             return;
         }
 
-        $semester = FormHelper::normalizeSemester($data[$field]);
+        $semester = (string) FormHelper::normalizeSemester($data[$field]);
+        $allowedKeys = array_map('strval', $allowedKeys);
 
-        if (!in_array($semester, FormHelper::validSemesters(), true) || !in_array($semester, $allowedKeys, true)) {
+        if (!in_array($semester, FormHelper::validSemesters(), true) || !in_array($semester, $allowedKeys, false)) {
             $errors[$field][] = 'El semestre seleccionado no es valido.';
         }
     }

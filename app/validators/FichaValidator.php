@@ -163,17 +163,14 @@ class FichaValidator
 
     private static function validateSemester(array &$errors, array $data, string $field, array $allowedKeys): void
     {
-        $semester = FormHelper::normalizeSemester($data[$field]);
-
-error_log('SEMESTRE_NORMALIZADO=' . $semester);
-error_log('SEMESTRES_VALIDOS=' . json_encode($allowedKeys));
         if (empty($data[$field])) {
             return;
         }
 
-        $semester = FormHelper::normalizeSemester($data[$field]);
+        $semester = (string) FormHelper::normalizeSemester($data[$field]);
+        $allowedKeys = array_map('strval', $allowedKeys);
 
-        if (!in_array($semester, FormHelper::validSemesters(), true) || !in_array($semester, $allowedKeys, true)) {
+        if (!in_array($semester, FormHelper::validSemesters(), true) || !in_array($semester, $allowedKeys, false)) {
             $errors[$field][] = 'El semestre seleccionado no es valido.';
         }
     }
