@@ -83,6 +83,10 @@ class JsonHelper
             return FormHelper::normalizeBloodType($value);
         }
 
+        if ($normalizedKey === 'genero') {
+            return FormHelper::normalizeGender($value);
+        }
+
         if ($normalizedKey === 'semestre') {
             return FormHelper::normalizeSemester($value);
         }

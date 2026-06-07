@@ -44,6 +44,11 @@ class FormHelper
         return preg_replace('/[^0-9+]/', '', (string) $value) ?? '';
     }
 
+    public static function normalizePhoneDigits(mixed $value): string
+    {
+        return preg_replace('/\D+/', '', (string) $value) ?? '';
+    }
+
     public static function normalizeDate(mixed $value): string
     {
         $parsed = self::parseDate($value);
@@ -118,6 +123,59 @@ class FormHelper
     public static function validSemesters(): array
     {
         return ['1', '2', '3', '4', '5', '6'];
+    }
+
+    public static function normalizeGender(mixed $value): string
+    {
+        $value = self::choiceKey($value);
+
+        return match ($value) {
+            'h', 'masculino', 'macho', 'varon' => 'masculino',
+            'm', 'femenino', 'hembra' => 'femenino',
+            'otro', 'no-binario', 'no-binaria', 'nb' => 'otro',
+            default => $value,
+        };
+    }
+
+    public static function validGenders(): array
+    {
+        return ['masculino', 'femenino', 'otro', 'no-binario'];
+    }
+
+    public static function calculateAge(mixed $birthDate): ?int
+    {
+        $normalizedDate = self::parseDate($birthDate);
+
+        if ($normalizedDate === null) {
+            return null;
+        }
+
+        $birth = new DateTimeImmutable($normalizedDate);
+        $today = new DateTimeImmutable('today');
+
+        return (int) $birth->diff($today)->y;
+    }
+
+    public static function extractCurpBirthDate(mixed $curp): ?string
+    {
+        $curp = strtoupper(preg_replace('/\s+/', '', (string) $curp) ?? '');
+
+        if (preg_match('/^[A-Z]{4}(\d{6})([HM])/', $curp, $matches) !== 1) {
+            return null;
+        }
+
+        return $matches[1];
+    }
+
+    public static function extractCurpGender(mixed $curp): ?string
+    {
+        $curp = strtoupper(preg_replace('/\s+/', '', (string) $curp) ?? '');
+
+        if (preg_match('/^[A-Z]{4}\d{6}([HM])/', $curp, $matches) !== 1) {
+            return null;
+        }
+
+        return $matches[1];
     }
 
     public static function upper(mixed $value): string
